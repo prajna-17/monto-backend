@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRouter from "./routes/auth.routes.js";
+import categoryRouter from "./routes/category.routes.js";
+import productRouter from "./routes/product.routes.js";
 
 import swaggerUi from "swagger-ui-express"
 import { readFileSync } from "fs";
@@ -16,6 +18,8 @@ app.use(express.json());
 
 
 app.use("/api/auth", authRouter);
+app.use("/api/category", categoryRouter);
+app.use("/api/product", productRouter);
 
 
 const swaggerDocument = JSON.parse(
