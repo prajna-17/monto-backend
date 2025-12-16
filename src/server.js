@@ -9,6 +9,8 @@ import swaggerUi from "swagger-ui-express";
 import { readFileSync } from "fs";
 // import swaggerDocument  from "./swagger-output.json" assert { type: 'json' };
 import { connectDB } from "./config/db.js";
+import { uploadRouter } from "./uploadthing.js";
+import { createRouteHandler } from "uploadthing/express";
 
 dotenv.config();
 
@@ -16,25 +18,34 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use(
+	"/api/uploadthing",
+	createRouteHandler({
+		router: uploadRouter,
+	})
+);
+
 app.use("/api/auth", authRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/product", productRouter);
 
 const swaggerDocument = JSON.parse(
-  readFileSync(new URL("./swagger-output.json", import.meta.url), "utf-8")
+	readFileSync(new URL("./swagger-output.json", import.meta.url), "utf-8")
 );
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 connectDB()
-  .then(() => {
-    app.on("error", (error) => {
-      console.log("server Error", error);
-    });
-    app.listen(process.env.PORT || 3000, () => {
-      console.log(`server is listning on port ${process.env.PORT || 3000}`);
-    });
-  })
-  .catch((err) => {
-    console.log("MONGODB Connection FAILED:", err);
-  });
+	.then(() => {
+		app.on("error", (error) => {
+			console.log("server Error", error);
+		});
+		app.listen(process.env.PORT || 3000, () => {
+			console.log(
+				`server is listning on port ${process.env.PORT || 3000}`
+			);
+		});
+	})
+	.catch((err) => {
+		console.log("MONGODB Connection FAILED:", err);
+	});
