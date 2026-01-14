@@ -5,7 +5,7 @@ import { createResponse, ErrorResponse } from "../utils/responseWrapper.js";
 
 export const createOrder = async (req, res) => {
 	try {
-		const { customerId, products, shippingAddress } = req.body;
+		const { customerId, products, shippingAddress, discount } = req.body;
 
 		// Validate customer exists or not
 		const customerExists = await User.findById(customerId);
@@ -50,6 +50,7 @@ export const createOrder = async (req, res) => {
 				category: dbProduct.category,
 				price: dbProduct.price,
 				quantity: item.quantity,
+				size: item.size,
 				subtotal,
 			});
 		}
@@ -59,7 +60,8 @@ export const createOrder = async (req, res) => {
 			user: customerId,
 			products: orderItems,
 			shippingAddress,
-			totalAmount,
+			totalAmount: totalAmount - discount,
+			discount,
 		});
 
 		await newOrder.save();
