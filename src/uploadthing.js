@@ -6,9 +6,16 @@ export const uploadRouter = {
 	imageUploader: f({
 		image: {
 			maxFileSize: "4MB",
-			maxFileCount: 1,
+			maxFileCount: 5,
 		},
-	}).onUploadComplete((data) => {
-		console.log("upload completed");
+	}).onUploadComplete(({ files }) => {
+		console.log(
+			"Uploaded files:",
+			files.map((f) => f.url)
+		);
+
+		return {
+			urls: files.map((file) => file.url),
+		};
 	}),
 };
